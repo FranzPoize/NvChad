@@ -5,7 +5,6 @@ local M = {}
 local utils = require "core.utils"
 
 -- export on_attach & capabilities for custom lspconfigs
-
 M.on_attach = function(client, bufnr)
   client.server_capabilities.documentFormattingProvider = false
   client.server_capabilities.documentRangeFormattingProvider = false
@@ -15,7 +14,10 @@ M.on_attach = function(client, bufnr)
   if client.server_capabilities.signatureHelpProvider then
     require("nvchad.signature").setup(client)
   end
+end
 
+-- disable semantic tokens
+M.on_init = function(client, _)
   if not utils.load_config().ui.lsp_semantic_tokens and client.supports_method "textDocument/semanticTokens" then
     client.server_capabilities.semanticTokensProvider = nil
   end
@@ -42,6 +44,7 @@ M.capabilities.textDocument.completion.completionItem = {
 }
 
 require("lspconfig").lua_ls.setup {
+  on_init = M.on_init,
   on_attach = M.on_attach,
   capabilities = M.capabilities,
 
