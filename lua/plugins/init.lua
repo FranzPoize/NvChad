@@ -212,7 +212,7 @@ local default_plugins = {
 
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "s1n7ax/nvim-window-picker" },
     cmd = "Telescope",
     init = function()
       require("core.utils").load_mappings "telescope"
