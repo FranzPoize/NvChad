@@ -130,6 +130,10 @@ local default_plugins = {
   },
 
   {
+    'folke/neodev.nvim',
+  },
+
+  {
     "neovim/nvim-lspconfig",
     event = "User FilePost",
     config = function()
