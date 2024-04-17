@@ -40,6 +40,8 @@ M.capabilities.textDocument.completion.completionItem = {
   },
 }
 
+require("neodev").setup()
+
 require("lspconfig").lua_ls.setup {
   on_init = M.on_init,
   on_attach = M.on_attach,
