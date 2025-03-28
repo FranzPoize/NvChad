@@ -6,7 +6,10 @@ local sources = {
 
   -- webdev stuff
   b.formatting.deno_fmt, -- choosed deno for ts/js files cuz its very fast!
-  b.formatting.prettier.with { filetypes = { "xml", "html", "markdown", "css" } }, -- so prettier works only on these filetypes
+  b.formatting.prettier.with { filetypes = { "xml", "html", "markdown", "css"} }, -- so prettier works only on these filetypes
+  b.diagnostics.eslint_d.with { filetypes = { "js", "ts", "vue"} }, -- so prettier works only on these filetypes
+  b.formatting.eslint_d.with { filetypes = { "js", "ts", "vue"} }, -- so prettier works only on these filetypes
+  b.code_actions.eslint_d,
 
   b.formatting.xmlformat.with { extra_args = {"--indent", "4", "--blanks"}},
   -- Lua
@@ -14,13 +17,13 @@ local sources = {
 
   -- cpp
   b.formatting.clang_format,
-
-  -- python
-  b.formatting.isort,
-  b.diagnostics.pylint,
-  b.formatting.black,
-  b.diagnostics.flake8
 }
+
+null_ls.builtins.diagnostics.pylint.with({
+  env = function(params)
+    return { PYTHONPATH = vim.fn.expand(params.root .. "/.venv/lib/*/site-packages")}
+  end
+})
 
 null_ls.setup {
   debug = false,

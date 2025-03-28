@@ -65,7 +65,7 @@ local options = {
     },
   },
 
-  extensions_list = { "themes", "terms", "fzf" },
+  extensions_list = { "themes", "terms", "fzf", "live_grep_args" },
   extensions = {
     fzf = {
       fuzzy = true,

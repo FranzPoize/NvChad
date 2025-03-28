@@ -72,11 +72,13 @@ local default_plugins = {
     event = { "BufReadPost", "BufNewFile" },
     cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
     build = ":TSUpdate",
+    dependencies = { "LiadOz/nvim-dap-repl-highlights" },
     opts = function()
       return require "plugins.configs.treesitter"
     end,
     config = function(_, opts)
       dofile(vim.g.base46_cache .. "syntax")
+      require("nvim-dap-repl-highlights").setup()
       require("nvim-treesitter.configs").setup(opts)
     end,
   },
@@ -130,7 +132,7 @@ local default_plugins = {
   },
 
   {
-    'folke/neodev.nvim',
+    "folke/neodev.nvim",
   },
 
   {
@@ -147,12 +149,29 @@ local default_plugins = {
     event = "InsertEnter",
     dependencies = {
       {
+        "luckasRanarison/tailwind-tools.nvim",
+        name = "tailwind-tools",
+        build = ":UpdateRemotePlugins",
+        dependencies = {
+          "nvim-treesitter/nvim-treesitter",
+          "nvim-telescope/telescope.nvim", -- optional
+          "neovim/nvim-lspconfig", -- optional
+        },
+        opts = {}, -- your configuration
+      },
+      {
         -- snippet plugin
         "L3MON4D3/LuaSnip",
-        dependencies = "rafamadriz/friendly-snippets",
+        dependencies = {
+          "rafamadriz/friendly-snippets",
+          "mstuttgart/vscode-odoo-snippets",
+          "kmarius/jsregexp",
+        },
+        build = "make install_jsregexp",
         opts = { history = true, updateevents = "TextChanged,TextChangedI" },
         config = function(_, opts)
           require("plugins.configs.others").luasnip(opts)
+          require("luasnip.loaders.from_vscode").lazy_load()
         end,
       },
 
@@ -192,12 +211,12 @@ local default_plugins = {
   {
     "numToStr/Comment.nvim",
     keys = {
-      { "gcc", mode = "n", desc = "Comment toggle current line" },
-      { "gc", mode = { "n", "o" }, desc = "Comment toggle linewise" },
-      { "gc", mode = "x", desc = "Comment toggle linewise (visual)" },
-      { "gbc", mode = "n", desc = "Comment toggle current block" },
-      { "gb", mode = { "n", "o" }, desc = "Comment toggle blockwise" },
-      { "gb", mode = "x", desc = "Comment toggle blockwise (visual)" },
+      { "gcc", mode = "n",          desc = "Comment toggle current line" },
+      { "gc",  mode = { "n", "o" }, desc = "Comment toggle linewise" },
+      { "gc",  mode = "x",          desc = "Comment toggle linewise (visual)" },
+      { "gbc", mode = "n",          desc = "Comment toggle current block" },
+      { "gb",  mode = { "n", "o" }, desc = "Comment toggle blockwise" },
+      { "gb",  mode = "x",          desc = "Comment toggle blockwise (visual)" },
     },
     init = function()
       require("core.utils").load_mappings "comment"
@@ -225,7 +244,15 @@ local default_plugins = {
 
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter", { "nvim-telescope/telescope-fzf-native.nvim", build = "make" }, "s1n7ax/nvim-window-picker"  },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      "s1n7ax/nvim-window-picker", 
+      {
+        "nvim-telescope/telescope-live-grep-args.nvim",
+        version = "^1.0.0"
+      },
+    },
     cmd = "Telescope",
     init = function()
       require("core.utils").load_mappings "telescope"

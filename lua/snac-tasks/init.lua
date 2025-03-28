@@ -31,6 +31,11 @@ local find_build_folder = function(opts)
               cmd = "make",
               args = {"-j", "8"},
               cwd = selection["value"],
+              components = {
+                "on_exit_set_status",
+                "on_result_diagnostics_trouble",
+                {"on_output_parse", problem_matcher = "$gcc"},
+              }
             }
             task:start()
             overseer:open()
