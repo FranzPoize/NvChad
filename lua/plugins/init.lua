@@ -164,7 +164,7 @@ local default_plugins = {
         "L3MON4D3/LuaSnip",
         dependencies = {
           "rafamadriz/friendly-snippets",
-          "mstuttgart/vscode-odoo-snippets",
+          "FranzPoize/odoo-snippets",
           "kmarius/jsregexp",
         },
         build = "make install_jsregexp",

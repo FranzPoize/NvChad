@@ -4,6 +4,21 @@ capabilities.offsetEncoding = {"utf-16"}
 
 local lspconfig = require "lspconfig"
 
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client == nil then
+      return
+    end
+    if client.name == 'ruff' then
+      -- Disable hover in favor of Pyright
+      client.server_capabilities.hoverProvider = false
+    end
+  end,
+  desc = 'LSP: Disable hover capability from Ruff',
+})
+
 local configs = require "lspconfig.configs"
 configs.odoo_lsp = {
   default_config = {
@@ -14,22 +29,14 @@ configs.odoo_lsp = {
   }
 }
 
+
 -- if you just want default config for the servers then put them in a table
-local servers = {  "html", "cssls", "clangd", "glslls", "ruff", "odoo_lsp"}
+local servers = {  "html", "cssls", "clangd", "glslls", "ruff", "odoo_lsp", "ts_ls", "eslint"}
 
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
     capabilities = capabilities,
-    settings = {
-      pyright = {
-        python = {
-          analysis = {
-            logLevel = "Trace"
-          }
-        }
-      }
-    }
   }
 end
 
@@ -59,34 +66,3 @@ vim.filetype.add({
   }
 })
 
-local mason_registry = require('mason-registry')
-local ts_language_server_path = mason_registry.get_package('typescript-language-server'):get_install_path() .. '/node_modules/typescript/lib'
-
-lspconfig.volar.setup({
-  filetypes = { "vue", "javascript", "typescript" }, -- Include Nuxt files
-  init_options = {
-    typescript = {
-      tsdk = ts_language_server_path,
-    },
-    languageFeatures = {
-      implementation = true,
-      references = true,
-      definition = true,
-      typeDefinition = true,
-      callHierarchy = true,
-      hover = true,
-      rename = true,
-      renameFileRefactoring = true,
-      signatureHelp = true,
-      codeAction = true,
-      completion = {
-        defaultTagNameCase = "both",
-        getDocumentNameCasesRequest = true,
-        getDocumentSelectionRequest = true
-      },
-    }
-  }
-})
-
--- 
--- lspconfig.pyright.setup { blabla}
